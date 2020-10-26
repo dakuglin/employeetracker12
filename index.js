@@ -1,9 +1,35 @@
-var inquirer = require("inquirer");
+//Required In Information
+//==================================================================
+const inquirer = require("inquirer");
+const cTable = require("console.table"); 
+const connection = require("./db/employeeDBConnection");
+const db = require("./db"); //looks for index.js
 
-const teamMembers =[];
-console.log(teamMembers)
 
-const startList= [
+//Console.Table
+//==================================================================
+
+// function Employee (firstName, lastName, role, manager) {
+   
+//     this.firstName = firstName;
+//     this.lastName = lastName;
+//     this.role = role;
+//     this.manager = manager;
+// }
+// console.table(functiont)
+//     {
+//       name: 'test',
+//       age: 10
+//     }, {
+//       name: 'test',
+//       age: 2
+//     }
+//   ]);
+
+
+//Variables
+//===================================================================
+const startList = [
 {
     type: "list",
     message: "What would you like to do?", //question 
@@ -16,22 +42,22 @@ const addEmployee = [
     {
         type: "input",
         message: "What is the first name of the employee?", //question 
-        name: "firstName",
+        name: "first_name",
     },
     {
         type: "input",
         message: "What is the last name of the employee?", //question 
-        name: "lastName",
+        name: "last_name",
     },
     {
         type: "input",
         message: "What is the employees role?", //question 
-        name: "role",
+        name: "role_id",
     },
     {
         type: "input",
         message: "Who is the employees manager?", //question 
-        name: "manager",
+        name: "manager_id",
     }
 ];
 
@@ -40,7 +66,7 @@ const removeEmployee = [
         type: "list",
         message: "Which employee would you like to remove: ",
         name: "employeeRemoved",
-        choices = [teamMembers],
+        //choices = [teamMembers],
 
     }
 ];
@@ -59,16 +85,26 @@ const updateEmployee = [
 ];
 
 
+
+//Functions
+//===================================================================
 function displayQuestionsList() {
     inquirer.prompt(startList)
     .then(function(response) {
       
         if (response.command === "View All Employees") {
-            //view all employees
-            console.log("success")
+
+            // connection.query("SELECT first_name, FROM employee", function(err, results, fields) {
+            //     if(err) throw err;
+            //     console.log(results);
+            // });
         }
         else if (response.command === "View All Employees By Department") {
-            //view employees by department
+
+            // connection.query("SELECT * FROM department", function(err, results, fields) {
+            //     if(err) throw err;
+            //     console.log(results);
+            // });
         }
         else if (response.command === "View All Employees By Manager") {
             //view al employees by manager
@@ -93,14 +129,18 @@ function displayQuestionsList() {
 
 function addEmployeeFunction() {
     inquirer.prompt(addEmployee)
-    .then(function(response) {
-        console.log(response.firstName)
-        var employeeName = response.firstName;
-        
-        teamMembers.push(employeeName);
-        console.log(teamMembers)
+    .then(function({first_name, last_name, role_id, manager_id}) {
 
-        displayQuestionsList()
+        // var employee = new employee(first_name, last_name, role_id, manager_id);
+
+        // var sql = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('first_name', 'last_name', 'role_id', 'manager_id')"
+
+        // connection.query(sql, function(err, result) {
+        //     if (err) throw err;
+        //     console.log("Inserted 1 employee");
+        // });
+ 
+        // displayQuestionsList()
     });
 }
 
@@ -108,8 +148,22 @@ function addEmployeeFunction() {
 displayQuestionsList()
 
 
-
 //PSEUDOCODE
 //=====================================================================================
 
 //Start the program and show user the 
+
+// async function  view Employees () {
+//     const employees  = await db.finalAllEmployees
+// }
+
+
+// switch (choice) (
+//     case 'View_employees';
+//     return viewEmployees();
+// )
+
+// function quit()
+
+// const employeeChoices = employees.map(())
+

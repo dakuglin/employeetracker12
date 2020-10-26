@@ -7,7 +7,7 @@ CREATE DATABASE employee_db;
 
 USE employee_db;
 
-CREATE TABLE department(
+CREATE TABLE department (
     id INTEGER(11) AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(30)
 );
@@ -28,18 +28,3 @@ CREATE TABLE employee (
     manager_id INTEGER(11) NULL
 
 );
-
-
-INSERT INTO department (name)
-VALUES ("Human Resources");
-INSERT INTO department (name)
-VALUES ("Accounting");
-
-INSERT INTO role (title, salary, department_id)
-VALUES ("Engineer", 80000, 5);
-
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Dana", "Kuglin", 5, 10);
-
-
-
