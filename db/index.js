@@ -7,6 +7,7 @@ class DB {
     // }
 
     addEmployee(employee) {  //method
+
         return this.connection.query("INSERT INTO employee SET ?", employee)
     }
     // class Employee (firstName, lastName, roleId, managerId) {
@@ -14,6 +15,11 @@ class DB {
     // }
     // createEmployee(employee) {
     //     return this.connection.query("INSERT INTO employee SET ?", employee)
+    // }
+
+    // addDepartment(department_name) {  //method
+
+    //     return this.connection.query("INSERT INTO department SET ?", department)
     // }
 
 
