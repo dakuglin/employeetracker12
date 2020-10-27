@@ -1,4 +1,4 @@
-const util = require("util"); //permisify 
+//const util = require("util"); //permisify 
 var mysql = require("mysql");
 
 var connection = mysql.createConnection({
@@ -21,7 +21,7 @@ connection.connect(function(err) {
   connection.end();
 });
 
-//connection.connect();
+// connection.connect();
 
 //connection.query = util.promisify(connection.query);
 
