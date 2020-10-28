@@ -10,9 +10,6 @@ const db = require("./db"); //looks for index.js
 //Variables
 //===================================================================
 
-// const cTable = [];
-// console.table(cTable);
-
 const startList = [
 {
     type: "list",
@@ -27,34 +24,34 @@ const startList = [
             name: "View All Employees By Department",
             value: "viewAllEmployeesByDepartment",
         },
-        // {
-        //     name:  "View All Employees By Manager", 
-        //     value: "viewAllEmployeesByManager",
-        // },
+        {
+            name:  "View All Employees By Manager", 
+            value: "viewAllEmployeesByManager",
+        },
         {
             name:  "Add Employee", 
             value: "addEmployee",
         },
-        // {
-        //     name:  "Remove Employee", 
-        //     value: "removeEmployee",
-        // },
-        // {
-        //     name:  "Update Employee Role", 
-        //     value: "updateEmployeeRole",
-        // },
-        // {
-        //     name:  "Update Employee Manager",
-        //     value: "updateEmployeeManager",
-        // },
-        // {
-        //     name:  "Remove Department",
-        //     value: "removeDepartment",
-        // },     
-        // {
-        //     name:  "Add Department",
-        //     value: "addDepartment",
-        // },    
+        {
+            name:  "Remove Employee", 
+            value: "removeEmployee",
+        },
+        {
+            name:  "Update Employee Role", 
+            value: "updateEmployeeRole",
+        },
+        {
+            name:  "Update Employee Manager",
+            value: "updateEmployeeManager",
+        },
+        {
+            name:  "Remove Department",
+            value: "removeDepartment",
+        },     
+        {
+            name:  "Add Department",
+            value: "addDepartment",
+        },    
     ]  
 }];
 
@@ -122,37 +119,37 @@ function displayQuestionsList() {
 
         switch (response.command) {
             case "viewAllEmployees":
-                //console.log("selected view all employees");
-                // viewAllEmployeesFunction();
+                console.log("selected view all employees");
+                //viewAllEmployeesFunction();
                 queryEmployees();
                 break;   
             case "viewAllEmployeesByDepartment" :
                 console.log("selected view all employees by department");
                 break;
-            // case "viewAllEmployeesByManager" :
-            //     console.log("bye manager");  
-            //     break; 
+            case "viewAllEmployeesByManager" :
+                console.log("bye manager");  
+                break; 
             case "addEmployee" :
                 console.log("add employee");  
                 addEmployeeFunction();
                 break;  
-            // case "removeEmployee" :
-            //     console.log("remove employee");  
-            //     break;  
-            // case "updateEmployeeRole" :
-            //     console.log("updated employee");  
-            //     break; 
-            // case "updateEmployeeManager" :
-            //     console.log("updated employee manager");  
-            //     break; 
-        //    case "removeDepartment" :
-        //        console.log("removed deaprtment");
-        //        removeDepartmentFunction();
-        //         break;
-        //     case "addDepartment" :
-        //         //console.log("add department");
-        //         addDepartmentFunction();
-        //         break;    
+            case "removeEmployee" :
+                console.log("remove employee");  
+                break;  
+            case "updateEmployeeRole" :
+                console.log("updated employee");  
+                break; 
+            case "updateEmployeeManager" :
+                console.log("updated employee manager");  
+                break; 
+           case "removeDepartment" :
+               console.log("removed deaprtment");
+               removeDepartmentFunction();
+                break;
+            case "addDepartment" :
+                //console.log("add department");
+                addDepartmentFunction();
+                break;    
             default : 
                 endQuiz();
         }
@@ -189,33 +186,50 @@ function queryEmployees() {
     connection.query("SELECT * FROM employee", function(err, res) {
       if (err) throw err;
       for (var i = 0; i < res.length; i++) {
-          
-          var employeeName = res[i].first_name //finds all names in employee table
-          var employeeId  = res[i].role_id; //finds all role id's in employee table
-          var allEmployees = [
-            {
-                type: "list",
-                message: "HERE IS MY QUESTION",
-                name: "listOFCurrentNames",
-                choices: [{
-                    name: employeeName,
-                    id: employeeId
-                }]
-            }]
-          //console.log(allEmployees[0])
-      }
+        var employeeName = res[i].first_name //finds all names in employee table
+        var employeeId  = res[i].role_id; //finds all role id's in employee table
 
-        //    inquirer.prompt({
-              
-            
-              
+        var testObj = [{
+        name: employeeName,
+        id: employeeId
+        }]
+        
+        console.log(testObj)
+
+    }
+        var allEmployees = [
+        {
+            type: "list",
+            message: "HERE IS MY QUESTION",
+            name: "listOFCurrentNames",
+            choices: [
+                testObj
+            ]
+        }]
+        console.log(allEmployees)
+
+        //     inquirer.prompt({
+  
         //   }).then(function(response) {
         //       console.log(response);
         //   })
-
+    
       //connection.end();
     });
   }
+
+
+
+  //const employeeChoice = res.map(({role_id, first_name}) => ({
+    //           name: '${first_name}',
+    //           value: '${role_id}'
+    //       }));
+    //       console.log(employeeChoice)
+    // }
+
+
+
+
 
   //var employee = new Employee(firstName, lastName, roleId, managerId);
         // console.log(employee)
