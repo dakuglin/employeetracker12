@@ -38,10 +38,10 @@ const startList = [
             name:  "Update Employee Role", 
             value: "updateEmployeeRole",
         },
-        // {
-        //     name:  "Update Employee Manager",
-        //     value: "updateEmployeeManager",
-        // },
+        {
+            name:  "Update Employee Manager",
+            value: "updateEmployeeManager",
+        },
         {
             name:  "Remove Department",
             value: "removeDepartment",
@@ -52,53 +52,6 @@ const startList = [
         },    
     ]  
 }];
-
-
-const addEmployee = [
-    {
-        type: "input",
-        message: "What is the first name of the employee?", //question 
-        name: "first_name",
-    },
-    {
-        type: "input",
-        message: "What is the last name of the employee?", //question 
-        name: "last_name",
-    },
-    // {
-    //     type: "input",
-    //     message: "What is the employees role?", //question 
-    //     name: "role_id",
-    // },
-    // {
-    //     type: "input",
-    //     message: "Who is the employees manager?", //question 
-    //     name: "manager_id",
-    // }
-];
-
-const removeEmployee = [
-    { 
-        type: "list",
-        message: "Which employee would you like to remove: ",
-        name: "employeeRemoved",
-        //choices = [teamMembers],
-
-    }
-];
-
-const updateEmployee = [
-    { 
-        type: "input",
-        message: "Which employee do you want to update: ",
-        name: "employeeUpdate",
-    },
-    { 
-        type: "input",
-        message: "What is the new role of the employee: ",
-        name: "employeeUpdateRole",
-    }
-];
 
 //Functions
 //==========================================================================================
@@ -125,12 +78,11 @@ function displayQuestionsList() {
                 removeEmployeeFunction(); 
                 break;  
             case "updateEmployeeRole" :
-                console.log("updated employee");
                 updateEmployeeRoleFunction()  
                 break; 
-        //     case "updateEmployeeManager" :
-        //         console.log("updated employee manager");  
-        //         break; 
+            case "updateEmployeeManager" :
+                    updateEmployeeManagerFunction();
+                break; 
            case "removeDepartment" :
                console.log("removed deaprtment");
                removeDepartmentFunction();
@@ -147,8 +99,7 @@ function displayQuestionsList() {
 
 //View All Employees__________________________________________________________________________
  function viewAllEmployeesFunction() {
-        connection.query(
-        "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, CONCAT(manager.first_name, manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id", function(err, res) {
+        connection.query("SELECT employee.id AS ID, employee.first_name AS FirstName, employee.last_name AS LastName, role.title AS Title, department.department_name AS Department , role.salary AS Salary, CONCAT(manager.first_name, manager.last_name) AS Manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;", function(err, res) {
             if (err) throw err
             console.log("\n");
             console.table(res)
@@ -191,14 +142,19 @@ function viewAllEmployeesByDeaprtmentFunction() {
 
 //Add Employee _________________________________________________________________________________
 function addEmployeeFunction() {
-    var query = connection.query("SELECT role.title, employee.manager_id FROM role INNER JOIN employee ON role.department_id = employee.role_id",function(err, res) {
+    var query = connection.query("SELECT employee.id, employee.first_name, role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id",
+    function(err, res) {
         if (err) throw err;
-        //console.log(res);
+        // console.log(res)
         var roleTitle = [];
+        var manager = [];
         for (var i=0; i < res.length; i++) {
-            var employees = res[i].title
-            roleTitle.push(employees)
-            console.log(roleTitle)
+            var employees = res[i].title;
+            var name = res[i].first_name;
+            roleTitle.push(employees);
+            manager.push(name);
+            // console.log(roleTitle)
+            // console.log(manager)
         }
         inquirer.prompt([
             {
@@ -217,29 +173,23 @@ function addEmployeeFunction() {
                 name: "title",
                 choices: roleTitle
             },
-            // {
-            //     type: "list",
-            //     message: "Who is the employee's manager?", //question 
-            //     name: "title",
-            //     choices: "SOMETHING HERE"
-            // }
+            {
+                type: "list", 
+                message: "Who is the employee's manager?", //question 
+                name: "manager_id",
+                choices: manager
+            }
         ]).then(function(response) {
             console.log(response)
-            displayQuestionsList(); //function to call back original list of questions
-            //push response back to data table
+            var query2 = connection.query("INSERT INTO employee SET ?",response,function(err,res) {
+                if (err) throw err;
+                console.log("Sucessfully added new employee.");
+                displayQuestionsList(); //function to call back original list of questions
+            })
+        
         });
     })
 };
-// var query = connection.query("INSERT INTO employee SET ?", data,
-
-            //     function(err, res) {
-            //         if (err) throw err;
-            //         displayQuestionsList();
-            //         connection.end();
-            //     }
-            
-        
-            // );
 
 //Remove Employee _________________________________________________________________________________
 function removeEmployeeFunction() {
@@ -270,7 +220,7 @@ function removeEmployeeFunction() {
 
 
 
-//Remove Departments _________________________________________________________________________________
+//Remove Departments ____________________________________________________________________________
 function removeDepartmentFunction() {
     var query = connection.query("SELECT * FROM department", function(err, res) {
         if (err) throw err;
@@ -308,7 +258,7 @@ function addDepartmentFunction() {
         }).then(function(data) {
             var query = connection.query("INSERT INTO department SET ?", data, function(err, res) {
                 if (err) throw err;
-                displayQuestionsList()
+                displayQuestionsList(); //function to call back original list of questions
             }    
         ) 
     })
@@ -316,112 +266,84 @@ function addDepartmentFunction() {
 
 //Update Employee Role______________________________________________________________________
 function updateEmployeeRoleFunction() {
-    console.log("WE ARE IN UPDATE EMPLOYEE ROLE FNX")
     var employees = [];
-    connection.query("SELECT * FROM employee", function(err, res) {
+    var roles = [];
+    connection.query("SELECT employee.first_name, role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;", 
+    function(err, res) {
         if (err) throw err;
+        //console.log(res);
         for (var i = 0; i < res.length; i++) {
             var employee = res[i].first_name;
-            var id = res[i].id;
-            
-            var employeeObj = {
-                name: employee,
-                id: id,
-            }
-            employees.push(employeeObj)
-            
-        //connection.end()
-        }  
-        var allEmployees = [   
-        {
-            type: "list",
-            message: "Select which employee's role you wnat to update: ",
-            name: "employeeUpdate",
-            choices: employees
-            
-        }]
-        inquirer.prompt(allEmployees)
-        .then(function(response) {
-            console.log(response);
-        }) 
+            var role = res[i].title;
+            // console.log(employee)
+            // console.log(id)
+            employees.push(employee);
+            roles.push(role);
 
-        connection.end()
-    });
-    //_____________________________________
-    var roles = [];
-    connection.query("SELECT * FROM role", function(err, res) {
-        if (err) throw err;
-        for (var i = 0; i < res.length; i++) {
-            var role = res[i].role_id;
-            var id = res[i].id;
-            
-            var roleObj = {
-                name: role,
-                id: id,
+            //console.log(employees)
+            //console.log(role)
+        };
+  
+        inquirer.prompt([
+            { 
+                type: "list",
+                message: "Which employee do you want to update: ",
+                name: "first_name",
+                choices: employees
+            },
+            { 
+                type: "list",
+                message: "What is the new role of the employee: ",
+                name: "role_id",
+                choices: roles
             }
-            roles.push(roleObj)
-        }  
-        var allRoles = [   
-        {
-            type: "list",
-            message: "Select which role you want to assign to the employee: ",
-            name: "roleUpdate",
-            choices: employees
-            
-        }]
-        inquirer.prompt(allRoles)
-        .then(function(response) {
+        ]).then(function(response) {
             console.log(response);
+            var query2 = connection.query("INSERT INTO employee SET ?",function(err, res) {
+                if (err) throw err;
+                console.log(res)
+                console.log("updated");
+                displayQuestionsList(); //function to call back original list of questions
+            })
         }) 
-    });
-
+  
+})
 }
 
-//End Quiz____________________________________________________________________________
+//Update Employee Manager___________________________________________________________________
+function updateEmployeeManagerFunction() {
+    console.log("we are in the function")
+
+    inquirer.prompt([
+        { 
+            type: "list",
+            message: "Which employee do you want to update with new manager: ",
+            name: "first_name",
+            //choices: employees
+        },
+        { 
+            type: "list",
+            message: "Who is the new manager: ",
+            name: "manager_id",
+            //choices: roles
+        }
+    ]).then(function(response) {
+        console.log(response);
+        var query2 = connection.query("INSERT INTO employee SET ?",function(err, res) {
+            if (err) throw err;
+            console.log(res)
+            console.log("Sucessfully updated manager");
+            displayQuestionsList(); //function to call back original list of questions
+        })
+    }) 
+
+    
+};
+
+//End Quiz__________________________________________________________________________________
 function endQuiz() {
     console.log("Ending questions")
     process.exit()
 };
 
 displayQuestionsList()
-
-//---------------------------------------------------------------------------------------------------
-// function queryEmployees() {
-//    var employees = [];
-//     connection.query("SELECT * FROM employee", function(err, res) {
-//       if (err) throw err;
-//       for (var i = 0; i < res.length; i++) {
-//         var employeeName = res[i].first_name //finds all names in employee table
-//         var employeeId  = res[i].role_id; //finds all role id's in employee table
-    
-//         var employeeObj = {
-//         name: employeeName,
-//         id: employeeId,
-//         }
-
-//         employees.push(employeeObj)
-//         console.log(employees)
-
-       
-//     }
-    
-//         var allEmployees = [
-//         {
-//             type: "list",
-//             message: "HERE IS MY QUESTION",
-//             name: "listOFCurrentNames",
-//             choices: employees
-            
-//         }]
-     
-      
-    
-    
-//         inquirer.prompt(allEmployees)
-//         .then(function(response) {
-//             console.log(response);
-//         })
-    
-//     //   connection.end();
-//     });
-//   }
