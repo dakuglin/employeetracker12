@@ -11,7 +11,7 @@ INSERT INTO role (title, salary, department_id)
 VALUES 
     ("Filed Enginner", 100000, 1),
     ("Staff Engineer", 90000, 1),
-    ("Operationa Accountant", 60000, 2),
+    ("Operational Accountant", 60000, 2),
     ("Accounts Recieviable" , 65000, 2),
     ("Sales Rep", 120000, 3),
     ("District Sales Manager", 140000, 3),

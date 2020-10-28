@@ -1,4 +1,4 @@
-//const util = require("util"); //permisify 
+const util = require("util"); //permisify 
 const mysql = require("mysql");
 
 const connection = mysql.createConnection({
@@ -17,6 +17,6 @@ connection.connect(function(err) {
 
 // connection.connect();
 
-//connection.query = util.promisify(connection.query);
+connection.query = util.promisify(connection.query);
 
 module.exports = connection;

@@ -4,8 +4,6 @@ const inquirer = require("inquirer");
 const consoleTalbe = require("console.table"); 
 const connection = require("./db/employeeDBConnection");
 const db = require("./db"); //looks for index.js
-//const { connect, query } = require("./db/employeeDBConnection");
-
 
 //Variables
 //===================================================================
@@ -16,14 +14,14 @@ const startList = [
     message: "What would you like to do?", //question 
     name: "command",
     choices: [
-        // {
-        //     name: "View All Employees", 
-        //     value: "viewAllEmployees",
-        // },
-        // {
-        //     name: "View All Employees By Department",
-        //     value: "viewAllEmployeesByDepartment",
-        // },
+        {
+            name: "View All Employees", 
+            value: "viewAllEmployees",
+        },
+        {
+            name: "View All Employees By Department",
+            value: "viewAllEmployeesByDepartment",
+        },
         // {
         //     name:  "View All Employees By Manager", 
         //     value: "viewAllEmployeesByManager",
@@ -32,10 +30,10 @@ const startList = [
             name:  "Add Employee", 
             value: "addEmployee",
         },
-        // {
-        //     name:  "Remove Employee", 
-        //     value: "removeEmployee",
-        // },
+        {
+            name:  "Remove Employee", 
+            value: "removeEmployee",
+        },
         {
             name:  "Update Employee Role", 
             value: "updateEmployeeRole",
@@ -101,39 +99,31 @@ const updateEmployee = [
         name: "employeeUpdateRole",
     }
 ];
-// const removeDepartment = [
-//     { 
-//         type: "input",
-//         message: "Which department would you like to remove: ",
-//         name: "removeDepartment",
-//     },
-// ];
 
 //Functions
-//===================================================================
+//==========================================================================================
 
 function displayQuestionsList() {
     inquirer.prompt(startList)
     .then(function(response) {
 
         switch (response.command) {
-            // case "viewAllEmployees":
-            //     console.log("selected view all employees");
-            //     //viewAllEmployeesFunction();
-            //     //queryEmployees();
-            //     break;   
-            // case "viewAllEmployeesByDepartment" :
-            //     console.log("selected view all employees by department");
-            //     break;
+            case "viewAllEmployees":
+                viewAllEmployeesFunction();
+                //queryEmployees();
+                break;   
+            case "viewAllEmployeesByDepartment" :
+                viewAllEmployeesByDeaprtmentFunction()
+                break;
         //     case "viewAllEmployeesByManager" :
         //         console.log("bye manager");  
         //         break; 
             case "addEmployee" :
                 addEmployeeFunction();
                 break;  
-        //     case "removeEmployee" :
-        //         console.log("remove employee");  
-        //         break;  
+            case "removeEmployee" :
+                removeEmployeeFunction(); 
+                break;  
             case "updateEmployeeRole" :
                 console.log("updated employee");
                 updateEmployeeRoleFunction()  
@@ -154,6 +144,33 @@ function displayQuestionsList() {
         
     }) 
 };    
+
+//View All Employees__________________________________________________________________________
+ function viewAllEmployeesFunction() {
+    connection.query(
+    "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, CONCAT(manager.first_name, manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id", function(err, res) {
+        if (err) throw err
+        console.log("\n");
+        console.table(res)
+    }  
+);
+    displayQuestionsList(); //function to call back original list of questions
+
+};
+
+//View All Employees By Department_____________________________________________________________
+function viewAllEmployeesByDeaprtmentFunction() {
+   
+    connection.query(
+    "SELECT employee.id, employee.first_name, employee.last_name, department.department_name AS department JOIN department on role.department_id = department.id", function(err, res) {
+        if (err) throw err
+        console.log("\n");
+        console.table(res)
+    }  
+);
+    displayQuestionsList(); //function to call back original list of questions
+
+};
 
 //Add Employee _________________________________________________________________________________
 function addEmployeeFunction() {
@@ -230,7 +247,50 @@ function addEmployeeFunction() {
         
             // );
 
+ //Remove Employee _________________________________________________________________________________
+function  removeEmployeeFunction() {
+        var employees = [];
+    connection.query("SELECT * FROM employee", function(err, res) {
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++) {
+            var employee = res[i].first_name;
+            var id = res[i].id;
+            
+            var employeeObj = {
+                name: employee,
+                id: id,
+            }
+            employees.push(employeeObj)
+            
+        //connection.end()
+        }  
+        var allEmployees = [   
+        {
+            type: "list",
+            message: "Select which employee you want to remove: ",
+            name: "removeEmployee",
+            choices: employees
+            
+        }]
+        //connection.end()
+        inquirer.prompt(allEmployees)
+        .then(function(response) {
+            
+            console.log(response);
+            connection.query('DELETE FROM employee WHERE id = ?', response, function(err, res) {
+                if (err) throw err;
+                console.log("removed employee")
+            })
+        }) 
+
+        //connection.end()
+        displayQuestionsList(); //function to call back original list of questions
+    });
  
+};
+
+
+
 //---------------------------------------------------------------------------------------------------
 function queryEmployees() {
    var employees = [];
