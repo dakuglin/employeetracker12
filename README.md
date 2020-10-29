@@ -36,9 +36,7 @@ Steps to install my project include:
 ## Usage 
 
 ![Getting Started](./pictures/allemployees.PNG)
-* 
-
- 
+* This is the start screen with all of the employees printed out. 
 
 
 ## Credits
