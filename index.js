@@ -22,10 +22,10 @@ const startList = [
             name: "View All Employees By Department",
             value: "viewAllEmployeesByDepartment",
         },
-        // {
-        //     name:  "View All Employees By Manager", 
-        //     value: "viewAllEmployeesByManager",
-        // },
+        {
+            name:  "View All Employees By Manager", 
+            value: "viewAllEmployeesByManager",
+        },
         {
             name:  "Add Employee", 
             value: "addEmployee",
@@ -63,14 +63,13 @@ function displayQuestionsList() {
         switch (response.command) {
             case "viewAllEmployees":
                 viewAllEmployeesFunction();
-                //queryEmployees();
                 break;   
             case "viewAllEmployeesByDepartment" :
                 viewAllEmployeesByDeaprtmentFunction()
                 break;
-        //     case "viewAllEmployeesByManager" :
-        //         console.log("bye manager");  
-        //         break; 
+            case "viewAllEmployeesByManager" :
+                console.log("bye manager");  
+                break; 
             case "addEmployee" :
                 addEmployeeFunction();
                 break;  
@@ -137,57 +136,6 @@ function viewAllEmployeesByDeaprtmentFunction() {
         console.log(query)
     
 };
-
-// function queryEmployees() {
-
-//     var employees = [];
-//      connection.query("SELECT * FROM department", function(err, res) {
-//        if (err) throw err;
-//        for (var i = 0; i < res.length; i++) {
-//          var employeeName = res[i].department_name //finds all names in employee table
-//          //var employeeId  = res[i].role_id; //finds all role id's in employee table
- 
-//          var testObj = {
-//          name: employeeName,
-//          id: employeeId
-//          }
- 
-//          console.log(testObj)
-//          id: employeeId,
-         
- 
-//          employees.push(employeeObj)
-//          console.log(employees)
-//         }
- 
-//      })
-
-// }
-
-// queryEmployees()
-            // inquirer.prompt([{
-            //     type: "list",
-            //     message: "Please select what department you would like to view: ",
-            //     name: "departmentList",
-            //     choices: function() {
-            //         var availableDepartments = res.map(e => e.department_name);
-            //         return availableDepartments;
-            //     }
-
-            // }]).then(function(res) {
-            //     console.log("\n");
-            //     console.log(res);
-           //PUT MY SELECT QUERY HERE
-           //     connection.query(
-            //     "SELECT employee.id, employee.first_name, employee.last_name, department.department_name AS department INNER JOIN department ON role.department_id = department.id", function(err, res) {
-            //         if (err) throw err
-            //         console.log("\n");
-            //         console.table(res)
-            //     }  
-            // );
-            //displayQuestionsList(); //function to call back original list of questions
-
-        // }
 
 //Add Employee _________________________________________________________________________________
 function addEmployeeFunction() {
@@ -408,3 +356,55 @@ function endQuiz() {
 };
 
 displayQuestionsList()
+
+
+// function queryEmployees() {
+
+//     var employees = [];
+//      connection.query("SELECT * FROM department", function(err, res) {
+//        if (err) throw err;
+//        for (var i = 0; i < res.length; i++) {
+//          var employeeName = res[i].department_name //finds all names in employee table
+//          //var employeeId  = res[i].role_id; //finds all role id's in employee table
+ 
+//          var testObj = {
+//          name: employeeName,
+//          id: employeeId
+//          }
+ 
+//          console.log(testObj)
+//          id: employeeId,
+         
+ 
+//          employees.push(employeeObj)
+//          console.log(employees)
+//         }
+ 
+//      })
+
+// }
+
+// queryEmployees()
+            // inquirer.prompt([{
+            //     type: "list",
+            //     message: "Please select what department you would like to view: ",
+            //     name: "departmentList",
+            //     choices: function() {
+            //         var availableDepartments = res.map(e => e.department_name);
+            //         return availableDepartments;
+            //     }
+
+            // }]).then(function(res) {
+            //     console.log("\n");
+            //     console.log(res);
+           //PUT MY SELECT QUERY HERE
+           //     connection.query(
+            //     "SELECT employee.id, employee.first_name, employee.last_name, department.department_name AS department INNER JOIN department ON role.department_id = department.id", function(err, res) {
+            //         if (err) throw err
+            //         console.log("\n");
+            //         console.table(res)
+            //     }  
+            // );
+            //displayQuestionsList(); //function to call back original list of questions
+
+        // }
