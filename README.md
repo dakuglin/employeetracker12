@@ -24,7 +24,7 @@ This project takes user input using inquiere and creates a employee tracking dev
 
 Video of the
 
-![Walkthrough Video](./.gif)
+![Walkthrough Video](./raw/employeetracker.gif)
 
 
 ## Installation
