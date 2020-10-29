@@ -110,20 +110,73 @@ function displayQuestionsList() {
 
 //View All Employees By Department_____________________________________________________________
 function viewAllEmployeesByDeaprtmentFunction() {
-    var query = connection.query('SELECT * FROM department', function(err, res) {
+    var departmentChoices = [];
+    var query = connection.query('SELECT * FROM department' , function(err, res) {
         if (err) throw err;
-        inquirer.prompt([{
-            type: "list",
-            message: "Please select what department you would like to view: ",
-            name: "departmentList",
-            choices: function() {
-                var availableDepartments = res.map(e => e.department_name);
-                return availableDepartments;
-            }
+        console.log(res);
+        //return res
+        for (var i=0; i < res.lenght; i++) {
+            var id = res[i].id;
+            console.log(id)
+            var department = res[i].department_name;
+            console.log(department)
 
-        }]).then(function(res) {
-            console.log("\n");
-            console.log(res);
+            var newObj = {
+
+                value: id,
+                name: department
+            }
+            //console.log(newObj)
+            departmentChoices.push(newObj)
+            return departmentChoices
+        }
+        displayQuestionsList(); //function to call back original list of questions
+       // console.log(departmentChoices)
+    })
+        console.log(departmentChoices)
+        console.log(query)
+    
+};
+
+// function queryEmployees() {
+
+//     var employees = [];
+//      connection.query("SELECT * FROM department", function(err, res) {
+//        if (err) throw err;
+//        for (var i = 0; i < res.length; i++) {
+//          var employeeName = res[i].department_name //finds all names in employee table
+//          //var employeeId  = res[i].role_id; //finds all role id's in employee table
+ 
+//          var testObj = {
+//          name: employeeName,
+//          id: employeeId
+//          }
+ 
+//          console.log(testObj)
+//          id: employeeId,
+         
+ 
+//          employees.push(employeeObj)
+//          console.log(employees)
+//         }
+ 
+//      })
+
+// }
+
+// queryEmployees()
+            // inquirer.prompt([{
+            //     type: "list",
+            //     message: "Please select what department you would like to view: ",
+            //     name: "departmentList",
+            //     choices: function() {
+            //         var availableDepartments = res.map(e => e.department_name);
+            //         return availableDepartments;
+            //     }
+
+            // }]).then(function(res) {
+            //     console.log("\n");
+            //     console.log(res);
            //PUT MY SELECT QUERY HERE
            //     connection.query(
             //     "SELECT employee.id, employee.first_name, employee.last_name, department.department_name AS department INNER JOIN department ON role.department_id = department.id", function(err, res) {
@@ -132,29 +185,37 @@ function viewAllEmployeesByDeaprtmentFunction() {
             //         console.table(res)
             //     }  
             // );
+            //displayQuestionsList(); //function to call back original list of questions
 
-        })
-    })
-
-    //displayQuestionsList(); //function to call back original list of questions
-
-};
+        // }
 
 //Add Employee _________________________________________________________________________________
 function addEmployeeFunction() {
     var query = connection.query("SELECT employee.id, employee.first_name, role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id",
     function(err, res) {
         if (err) throw err;
-        // console.log(res)
+         //console.log(res)
         var roleTitle = [];
         var manager = [];
         for (var i=0; i < res.length; i++) {
             var employees = res[i].title;
+            var id = res[i].id;
             var name = res[i].first_name;
             roleTitle.push(employees);
             manager.push(name);
             // console.log(roleTitle)
             // console.log(manager)
+
+            roleObj  = {
+                value: id,
+                name: roleTitle
+            }
+           // console.log(roleObj)
+            managerObj  = {
+                value: id,
+                name: manager
+            }
+            console.log(roleObj)
         }
         inquirer.prompt([
             {
@@ -171,13 +232,13 @@ function addEmployeeFunction() {
                 type: "list",
                 message: "What is the employee's role?", //question 
                 name: "title",
-                choices: roleTitle
+                choices: roleObj
             },
             {
                 type: "list", 
                 message: "Who is the employee's manager?", //question 
                 name: "manager_id",
-                choices: manager
+                choices: managerObj //NEEDS TO BE AN OBJECT
             }
         ]).then(function(response) {
             console.log(response)
